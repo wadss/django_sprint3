@@ -13,7 +13,7 @@ def query_set():
             pub_date__lte=datetime.now(),
             category__is_published=True,
             is_published=True,
-        )
+    )
     return query
 
 
@@ -38,7 +38,7 @@ def category_posts(request, category_slug):
         Category.objects,
         is_published=True,
         slug=category_slug
-        )
+    )
     posts = query_set().filter(
         category=category)
     context = {'category': category, 'post_list': posts}
