@@ -1,25 +1,24 @@
-from django.shortcuts import get_object_or_404, render
-
 from datetime import datetime
+
+from django.shortcuts import get_object_or_404, render
 
 from blog.models import Post, Category
 
-QNTT_POSTS = 5
+QUANTITY_POSTS = 5
 
 
-def query_set():
-    query = Post.objects.select_related(
+def queryset_posts():
+    return Post.objects.select_related(
         'category', 'author', 'location').filter(
             pub_date__lte=datetime.now(),
             category__is_published=True,
             is_published=True,
     )
-    return query
 
 
 def index(request):
     template = 'blog/index.html'
-    posts_list = query_set()[:QNTT_POSTS]
+    posts_list = queryset_posts()[:QUANTITY_POSTS]
     context = {'post_list': posts_list}
     return render(request, template, context)
 
@@ -27,7 +26,7 @@ def index(request):
 def post_detail(request, post_id):
     template = 'blog/detail.html'
     posts_list = get_object_or_404(
-        query_set(), pk=post_id)
+        queryset_posts(), pk=post_id)
     context = {'post': posts_list}
     return render(request, template, context)
 
@@ -39,7 +38,7 @@ def category_posts(request, category_slug):
         is_published=True,
         slug=category_slug
     )
-    posts = query_set().filter(
+    posts = queryset_posts().filter(
         category=category)
     context = {'category': category, 'post_list': posts}
     return render(request, template, context)

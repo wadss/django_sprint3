@@ -4,12 +4,12 @@ from django.contrib.auth import get_user_model
 from core.models import BaseModel
 
 
-QNT_LNGT = 256
+TITLE_LEN = NAME_LEN = 256
 User = get_user_model()
 
 
 class Category(BaseModel):
-    title = models.CharField(max_length=QNT_LNGT, verbose_name='Заголовок')
+    title = models.CharField(max_length=TITLE_LEN, verbose_name='Заголовок')
     description = models.TextField(verbose_name='Описание')
     slug = models.SlugField(
         unique=True,
@@ -23,22 +23,22 @@ class Category(BaseModel):
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.title[0:20]
+        return self.title[:20]
 
 
 class Location(BaseModel):
-    name = models.CharField(max_length=QNT_LNGT, verbose_name='Название места')
+    name = models.CharField(max_length=NAME_LEN, verbose_name='Название места')
 
     class Meta:
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
 
     def __str__(self):
-        return self.name[0:20]
+        return self.name[:20]
 
 
 class Post(BaseModel):
-    title = models.CharField(max_length=QNT_LNGT, verbose_name='Заголовок')
+    title = models.CharField(max_length=TITLE_LEN, verbose_name='Заголовок')
     text = models.TextField(verbose_name='Текст')
     pub_date = models.DateTimeField(
         verbose_name='Дата и время публикации',
@@ -49,21 +49,21 @@ class Post(BaseModel):
         User,
         on_delete=models.CASCADE,
         verbose_name='Автор публикации',
-        related_name='authors'
+        related_name='author_posts'
     )
     location = models.ForeignKey(
         Location,
         verbose_name='Местоположение',
         on_delete=models.SET_NULL,
         null=True,
-        related_name='locations'
+        related_name='location_posts'
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
         verbose_name='Категория',
         null=True,
-        related_name='categories'
+        related_name='category_posts'
     )
 
     class Meta:
@@ -72,4 +72,4 @@ class Post(BaseModel):
         ordering = ['-pub_date']
 
     def __str__(self):
-        return self.title[0:20]
+        return self.title[:20]
